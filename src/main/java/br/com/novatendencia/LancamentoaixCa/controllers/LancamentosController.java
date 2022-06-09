@@ -11,33 +11,26 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import br.com.novatendencia.LancamentoaixCa.models.Lancamento;
+import br.com.novatendencia.LancamentoaixCa.repositorio.LancamentosRepo;
 import br.com.novatendencia.LancamentoaixCa.repositorio.ReferenciaRepo;
-import br.com.novatendencia.LancamentoaixCa.models.Referencia;
 
 @Controller
-public class ReferenciasController {
-	
-	@Autowired
-	public ReferenciaRepo repo;
-	
-	@GetMapping("/referencias")
-	public String index(Model model) {
-		List<Referencia> referencias = (List<Referencia>)repo.findAll();
-		model.addAttribute("referencias", referencias);
-		model.addAttribute("referencia", new Referencia());
-		return "referencias/referencias";
-	}
+public class LancamentosController {
 
-	@PostMapping("/referencias")
-	public String Criar(@ModelAttribute Referencia referencia, Model model) {
-		repo.save(referencia);
-		return "redirect:/referencias";
+	@Autowired
+	public LancamentosRepo repo;
+
+	@PostMapping("/lancamentos")
+	public String Criar(@ModelAttribute Lancamento lancamento, Model model) {
+		repo.save(lancamento);
+		return "redirect:/";
 	
 	}
 	
-	@DeleteMapping("/referencias/{id}")
+	@DeleteMapping("/lancamentos/{id}")
 	public String Deletar(@PathVariable Integer id) {
 		repo.deleteById(id);
-		return "redirect:/referencias";
+		return "redirect:/";
 	}
 }

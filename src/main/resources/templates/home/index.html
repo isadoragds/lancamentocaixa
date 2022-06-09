@@ -11,14 +11,13 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  
   <body>
     <div class="container">
         <div class="table-wrapper">
             <div class="table-title">
                 <div class="row">
                     <div class="col-sm-6">
-						<h2>Consulta e Cadastro <b>de Referências</b></h2>
+						<h2>Consulta e Cadastro <b>de Lançamentos</b></h2>
 					</div>
 					<div class="col-sm-6">
 						<a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Cadastrar</span></a>
@@ -29,108 +28,73 @@
                 <thead>
                     <tr>
 						<th>Id</th>
-                        <th>Nome</th>
- 						<th>Ações</th>
-
+                        <th>Referência</th>
+                        <th>Tipo</th>
+                        <th>Valor</th>
+                        <th>Data</th>
+						<th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                         <tr th:each="referencia : ${referencias}">
-                        <td th:text="${referencia.id}"></td>   
-                        <td th:text="${referencia.nome}"></td>
+                    <tr th:each="lancamento : ${lancamentos}">
+                        <td th:text="${lancamento.id}" />   
+                        <td th:text="${lancamento.referencia.nome}" />
+                        <td th:text="${lancamento.tipo}" />   
+                        <td th:text="${lancamento.valor}" />
+                        <td th:text="${lancamento.data}" />
                         <td>
-                            <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                            <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                            <form action="#" th:action="@{'/lancamentos/{id}'(id=${lancamento.id})}" th:method="delete" >
+	                            <button type="submit" class="btn-link delete">
+	                            	<i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
+	                            </button>
+							</form>
+		
+							<!-- Delete Modal HTML -->
                         </td> 
                     </tr>				
                 </tbody>
-            </table>
-			<div class="clearfix">
-                <div class="hint-text">Página <b>1</b> de <b>1</b> páginas</div>
-                <ul class="pagination">
-                    <li class="page-item disabled"><a href="#">Previous</a></li>
-  					<li class="page-item active"><a href="#" class="page-link">1</a></li>
-                    <li class="page-item"><a href="#" class="page-link">1</a></li>
-                    <li class="page-item"><a href="#" class="page-link">Next</a></li>
-                </ul>
-            </div>
+            </table>				
+            	<!-- Edit Modal HTML -->
+		<div id="addEmployeeModal" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<form action="#" th:action="@{/lancamentos}" th:object="${lancamento}" method="post">
+						<div class="modal-header">						
+							<h4 class="modal-title">Nova referência</h4>
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+								<label>Referência</label>
+								<select th:object="${lancamento}" th:field="*{referencia}"> 
+    								<option th:each="ref : ${referencias}" th:value="${ref.id}" th:text="${ref.nome}" />
+								</select>
+							</div>	
+							<div class="form-group">
+								<label>Data</label>
+								<input th:field="*{data}" type="date" class="form-control" required>
+							</div>
+							<div class="form-group">
+								<label>Tipo</label>
+								<select th:field="*{tipo}"> 
+									<option value="Entrada">Entrada</option>
+									<option value="Saída">Saída</option>		 
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Valor</label>
+								<input th:field="*{valor}" type="number" min="1" step="any" />
+							</div>					
+						</div>					
+						<div class="modal-footer">
+							<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+							<input type="submit" class="btn btn-success" value="Adicionar">
+						</div>
+					</form>
+				</div>
+		</div>
+	</div>
         </div>
     </div>
-	<!-- Edit Modal HTML -->
-	<div id="addEmployeeModal" class="modal fade">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<form method="post" action="referencias">
-					<div class="modal-header">						
-						<h4 class="modal-title">Cadastro</h4>
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					</div>
-					<div class="modal-body">	
-					<div class="form-group">
-							<label>Id</label>
-							<input type="text" class="form-control" required>
-						</div>				
-						<div class="form-group">
-							<label>Nome</label>
-							<input type="text" class="form-control" required>
-						</div>					
-					</div>
-					<div class="modal-footer">
-						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
-						<input type="submit" class="btn btn-success" value="Adicionar">
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-	<!-- Edit Modal HTML -->
-	<div id="editEmployeeModal" class="modal fade">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<form>
-					<div class="modal-header">						
-						<h4 class="modal-title">Editar</h4>
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					</div>
-					<div class="modal-body">					
-						<div class="form-group">
-							<label>Id</label>
-							<input type="text" class="form-control" required>
-						</div>
-						<div class="form-group">
-							<label>Nome</label>
-							<input type="text" class="form-control" required>
-						</div>				
-					</div>
-					<div class="modal-footer">
-						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
-						<input type="submit" class="btn btn-info" value="Salvar">
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-	<!-- Delete Modal HTML -->
-	<div id="deleteEmployeeModal" class="modal fade">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<form>
-					<div class="modal-header">						
-						<h4 class="modal-title">Deletar</h4>
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					</div>
-					<div class="modal-body">					
-						<p>Tem certeza que deseja deletar?</p>
-						<p class="text-warning"><small>Essa ação não pode ser desfeita.</small></p>
-					</div>
-					<div class="modal-footer">
-						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
-						<input type="submit" class="btn btn-danger" value="Deletar">
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
 </body>
 </html>
